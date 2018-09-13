@@ -28,38 +28,26 @@ def lambda_handler(event, context):
     client = boto3.client('dynamodb')
     log.info('START_LAMBDA')
     log.info(event)
-    
-    # initialize some local varibales 
+    campaignId = event['campaignId']
+    environment = event['environment']
+    dbName = event['cacheName']
     jsonResponse = ""
     item = []
-    
-    if not event: 
-        return {
-           "statusCode": 400,
-           "cacheName": dbName,
-           "environment": envId,
-           "errorMessage" : "ERROR: No attributes passed in please retry"
-        }
-    else: 
-        
-       # Check that the correct parameters were supplied 
-       campaignId = event['campaignId']
-       envId = event['environment']
-       dbName = event['cacheName']
-    
+
+    # Check that the correct parameters were supplied 
     if not campaignId: 
         return {
            "statusCode": 400,
            "cacheName": dbName,
-           "environment": envId,
+           "environment": environment,
            "errorMessage" : "ERROR: No campaignId passed in please retry"
         }
         
-    if not envId: 
+    if not environment: 
         return {
            "statusCode": 400,
            "cacheName": dbName,
-           "environment": envId,
+           "environment": environment,
            "errorMessage" : "ERROR: No environment passed in please retry"
         }
         
@@ -67,7 +55,7 @@ def lambda_handler(event, context):
         return {
            "statusCode": 400,
            "cacheName": dbName,
-           "environment": envId,
+           "environment": environment,
            "errorMessage" : "ERROR: No cacheName passed in please retry"
         }   
 
@@ -88,7 +76,7 @@ def lambda_handler(event, context):
           response = table.get_item(
              Key={
                'campaignId': searchCampaignId,
-               'environmentId': envId
+               'environmentId': environment
              },
              ProjectionExpression="eligible_products",
           )
@@ -105,7 +93,7 @@ def lambda_handler(event, context):
        return {
            "statusCode": 500,
            "cacheName": dbName,
-           "environment": envId,
+           "environment": environment,
            "errorMessage" : "Cache does not exist"
        }
        
@@ -118,6 +106,6 @@ def lambda_handler(event, context):
     return {
            "statusCode": 200,
            "products": products,
-           "environment": envId,
+           "environment": environment,
            "cacheName": dbName
     }
