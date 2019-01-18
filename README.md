@@ -1,2 +1,2 @@
-# CB4E-Code-Repository
-CashBox for Entertainment Solution Accelerators
+# CB4-Code-Repository
+CashBox Solution Accelerators
